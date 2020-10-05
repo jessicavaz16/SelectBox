@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Box</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="select-box-wrap">
+            <div class="select-box">
+                <input type="text" readonly value="Select Country" class="list">
+                <span class="clear" title="Clear All"></span>
+                <span class="drop-down" title="Select"></span>
+            </div>
+            <div class="select-list">
+                <input type="text" class="search-box" placeholder="Search countries">
+                <div class="drop-down-list">
+                    <label class="check-wrap select-all" for="all">
+                        <input class="all-option" type="checkbox" id="all">
+                        <span class="check-box"></span>
+                        <span>Select All</span>
+                    </label>
+                    <div class="list-box">
+                        <label class="check-wrap" for="aus">
+                            <input class="options" type="checkbox" id="aus">
+                            <span class="check-box"></span>
+                            <span class="select-text">Australia</span>
+                        </label>
+                        <label class="check-wrap" for="ber">
+                            <input class="options" type="checkbox" id="ber">
+                            <span class="check-box"></span>
+                            <span class="select-text">Bermuda</span>
+                        </label>
+                        <label class="check-wrap" for="can">
+                            <input class="options" type="checkbox" id="can">
+                            <span class="check-box"></span>
+                            <span class="select-text">Canada</span>
+                        </label>
+                        <label class="check-wrap" for="jap">
+                            <input class="options" type="checkbox" id="jap">
+                            <span class="check-box"></span>
+                            <span class="select-text">Japan</span>
+                        </label>
+                        <label class="check-wrap" for="ind">
+                            <input class="options" type="checkbox" id="ind">
+                            <span class="check-box"></span>
+                            <span class="select-text">India</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var options = [];
+
+        function displayList(){
+            /* Displays selected elements in the selected box. 
+               If nothing is selected, then Select country is displayed */
+
+            if(options.toLocaleString()){
+                $(".clear").addClass("flex");
+                return options.toLocaleString();
+            }
+
+            $(".clear").removeClass("flex");
+            return "Select Country";
+        }
+
+        $(".drop-down").click(function(){
+            $(".select-list").toggleClass("slide-down");
+            $(this).toggleClass("drop-down-rotate");
+        });
+
+        $(".options").change(function(){
+            var val = $(this).siblings(".select-text").html();
+            
+            /* If it's checked push the country name to options array 
+               else remove the country */
+            if($(this).prop('checked') == true){
+                options.push(val);
+            }
+            else{
+                options = options.filter(function(value){
+                    return value != val;        
+                });
+            }
+
+            $(".list").val(displayList());
+        });
+
+        /* Clears all the selected options and reset to null */
+        $(".clear").click(function(){
+            options = [];
+            $(".list").val(displayList());
+
+            $(".all-option, .options").prop('checked',false);
+        });
+
+        /* Selects all the options */
+        $(".all-option").change(function(){
+            options = [];
+
+            if($(this).prop('checked') == true){
+                $(".options").each(function(){
+                    $(this).prop('checked',true);
+                    options.push($(this).siblings(".select-text").html());
+                });
+            }
+            else{
+                $(".options").each(function() {
+                    $(this).prop('checked',false);
+                });
+            }
+
+            $(".list").val(displayList());
+        });
+
+        /* Filters the list-box using filter function */
+        $(".search-box").keyup(function(){
+            var val = $(this).val().toLowerCase();
+
+            if(val !== "") $(".select-all").hide();
+            else $(".select-all").css({"display":"flex"});
+            
+            $(".list-box .check-wrap").filter(function(){
+                var text = $(this).children(".select-text").html().toLowerCase();
+                $(this).toggle(text.indexOf(val) > -1);
+            });
+        });
+
+    </script>
+
+</body>
+</html>
